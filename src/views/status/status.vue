@@ -1,0 +1,116 @@
+<template>
+	<div class="taskPlanM">
+		<div class="teskContent">
+			<!-- 搜索 -->
+			<div class="tesk_">
+				<el-input v-model="keyword" placeholder="请输入关键字" class="inputPlan"></el-input>
+				<el-button type="primary" @click="searchName" icon="el-icon-search">搜索</el-button>
+				<div class="tesk_right">
+					<!-- <el-button type="primary" @click="dialogTableVisible=true, rowData=''">添加</el-button> -->
+				</div>
+			</div>
+			<!-- 数据表格 -->
+			<div class="taskPlanList">
+				<el-table :data="tableData" tooltip-effect="dark" style="width: 100%,text-align: center;">
+                    <el-table-column label="警种" align="center">
+						<template slot-scope="scope">{{ scope.row.type }}</template>
+					</el-table-column>
+					<el-table-column label="包含的勤务状态" align="center">
+						<template slot-scope="scope">{{ scope.row.types }}</template>
+					</el-table-column>
+					<el-table-column label="勤务状态流转逻辑" align="center">
+						<template slot-scope="scope">
+							<img :class="allScreen == scope.row.id ? 'allScreen' : ''" @mousemove="allScreen = scope.row.id" :src="scope.row.img" alt="">
+						</template>
+					</el-table-column>
+				</el-table>
+			</div>
+		</div>
+	</div>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				tableData: [
+					{
+						type: "乘警",
+						types: "休息、出乘、预退乘、间休、处警、到达现场 休息、巡逻、预结束巡逻、间休、处警、到达现场 休息、上班",
+						img: require("@/assets/icon/ico_leftlist_speeking.png")
+					},
+					{
+						type: "巡警",
+						types: "休息、出乘、预退乘、间休、处警、到达现场 休息、巡逻、预结束巡逻、间休、处警、到达现场 休息、上班",
+						img: require("@/assets/icon/ico_leftlist_speeking.png")
+					}
+				],
+				allScreen: ''
+			};
+		}
+	};
+</script>
+
+<style lang="less" scoped>
+.taskPlanM {
+	margin: 20px;
+	.teskContent {
+		background: white;
+		padding: 20px;
+		box-shadow: 0 0 10px #ccc;
+		border-radius: 6px;
+		.tesk_ {
+			display: flex;
+			position: relative;
+			padding-bottom: 15px;
+			border-bottom: 1px solid #d6d6d6;
+			.inputPlan {
+				width: 300px;
+			}
+			.tesk_right {
+				position: absolute;
+				right: 20px;
+			}
+		}
+		.allScreen{
+			position: fixed;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+		}
+	}
+}
+.taskPlanContent {
+	.complete {
+		font-size: 14px;
+		text-align: left;
+		margin-top: 10px;
+		border-bottom: 1px solid #d6d6d6;
+		em {
+			display: inline-block;
+			margin-left: 10px;
+			cursor: pointer;
+		}
+	}
+	.pagination {
+		margin-top: 50px;
+	}
+	.active {
+		color: #409eff;
+	}
+}
+.pagination {
+	margin-top: 20px;
+	text-align: center;
+}
+.online{
+    color:#0ee20e;
+}
+.offline{
+	color:#666;
+}
+.killed{
+	color: red
+}
+</style>
