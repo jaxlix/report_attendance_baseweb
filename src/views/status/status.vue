@@ -12,7 +12,7 @@
 			<!-- 数据表格 -->
 			<div class="taskPlanList">
 				<el-table :data="tableData" tooltip-effect="dark" style="width: 100%,text-align: center;">
-                    <el-table-column label="警种" align="center">
+                    <el-table-column label="勤务模式" align="center">
 						<template slot-scope="scope">{{ scope.row.type }}</template>
 					</el-table-column>
 					<el-table-column label="包含的勤务状态" align="center">

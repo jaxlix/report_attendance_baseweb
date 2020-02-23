@@ -17,7 +17,7 @@
                     <el-table-column label="部门名称" align="center">
 						<template slot-scope="scope">{{ scope.row.account.accountName }}</template>
 					</el-table-column>
-                    <el-table-column label="警种" align="center">
+                    <el-table-column label="勤务模式" align="center">
 						<template slot-scope="scope">{{ scope.row.account.accountNo }}</template>
 					</el-table-column>
                      <el-table-column label="有效期" align="center">

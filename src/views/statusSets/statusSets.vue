@@ -31,7 +31,7 @@
                                 slot-scope="scope"
                             >{{ scope.row.departmentName }}</template>
                         </el-table-column>
-                        <el-table-column label="警种" align="center">
+                        <el-table-column label="勤务模式" align="center">
                             <template
                                 slot-scope="scope"
                             >{{ machineSign[scope.row.memberStateMachineSign] }}</template>
@@ -62,20 +62,19 @@
         </div>
         <!-- 添加设备 -->
         <el-dialog title="添加成员" :visible.sync="dialogTableVisible">
-            <addDevice :data="rowData" @reload="reload"></addDevice>
+            <addDevice :data="rowData" :batch="batch" @reload="reload"></addDevice>
         </el-dialog>
         <!-- 同步数据 -->
-        <el-dialog title="从融合通信同步数据" :visible.sync="synchronousVisible">
-            <Tree @checkedData="checkedData" @close="close" />
+        <el-dialog title="从融合通信同步数据" :visible.sync="synchronousVisible" width="750px">
+            <synchrodata @close="closesync" />
         </el-dialog>
     </div>
 </template>
 
 <script>
 import addDevice from "./addDevice";
-import upload from "@/components/common/upload";
 import zTree from "@/components/common/zTree/tree";
-import Tree from "@/components/common/tree/tree";
+import synchrodata from "./synchrodata";
 
 export default {
     data() {
@@ -91,6 +90,7 @@ export default {
             noData: true,
             vague: "",
             rowData: "",
+            batch: false,
             page: 1, // 分页
             pageSize: 10, // 分页数量
             departmentSign: "", // 查询的部门id
@@ -104,9 +104,8 @@ export default {
     },
     components: {
         addDevice,
-        upload,
         zTree,
-        Tree
+        synchrodata
     },
     methods: {
         // 获取数据表格
@@ -133,6 +132,30 @@ export default {
             this.dialogTableVisible = true;
             this.rowData = d;
         },
+        // 批量修改状态
+        updStatus() {
+            let memberSigns = ""
+            if(this.checkedList.length > 0){
+                this.checkedList.forEach( (d, i) => {
+                    if(i == this.checkedList.length-1){
+                        memberSigns += d.memberSign
+                    }else{
+                        memberSigns += d.memberSign+","
+                    }
+                })
+                this.rowData = {
+                    memberSign: memberSigns
+                }
+                this.batch = true
+                this.dialogTableVisible = true;
+            }else{
+                this.$message({
+                    message: "请选择人员",
+                    type: "warning"
+                })
+                return
+            }
+        },
         // 删除
         delConfirm(item) {
             this.$confirm("您确定要删除成员"+item.memberName+"？删除后不可恢复", "提示", {
@@ -157,9 +180,44 @@ export default {
             });
         },
         // 批量删除
-        batchDelete() {},
-        // 修改状态
-        updStatus() {},
+        batchDelete() {
+            let memberSigns = ""
+            if(this.checkedList.length > 0){
+                this.checkedList.forEach( (d, i) => {
+                    if(i == this.checkedList.length-1){
+                        memberSigns += d.memberSign
+                    }else{
+                        memberSigns += d.memberSign+","
+                    }
+                })
+            }else{
+                this.$message({
+                    message: "请选择人员",
+                    type: "warning"
+                })
+                return
+            }
+            this.$confirm("您确定要批量删除成员？删除后不可恢复", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+            }).then(() => {
+                let params = {
+                    memberSignList: memberSigns
+                };
+                this.$get(this.$api.delete, params).then(res => {
+                    if (res.result == 0) {
+                        this.$message({
+                            message: "删除成功",
+                            type: "success"
+                        });
+                        this.getData();
+                    } else {
+                        this.$message.error("删除失败");
+                    }
+                });
+            });
+        },
 		// 分页
         handleCurrentChange(newPage) {
             this.page = newPage - 1;
@@ -190,6 +248,9 @@ export default {
         handleSelectionChange(val){
             console.log(val)
             this.checkedList = val
+        },
+        closesync(){
+            this.synchronousVisible = false
         }
     },
     mounted() {

@@ -1,6 +1,8 @@
 let isGaw = false   // 是否公安网
-const IP = isGaw ? 'http://59.32.1.170:9011' : 'http://issts.free-http.svipss.top'   // 百度云测试环境
-// const IP = isGaw ? 'http://59.32.1.170:9011' : 'http://192.168.1.100:7060'   // 公司测试环境
+// const IP = isGaw ? 'http://59.32.1.170:9011' : 'http://issts.free-http.svipss.top'   // 百度云测试环境
+const IP = isGaw ? 'http://59.32.1.170:9011' : 'http://192.168.1.67:8800'   // 公司测试环境后台服务
+const APPIP = isGaw ? 'http://59.32.1.170:9011' : 'http://192.168.1.67:8081'   // 公司测试环境app服务
+
 // const IP2 = isGaw ? 'http://59.32.1.174:6061' : 'http://192.168.1.223:6061'    // 文件服务
 const IP2 = isGaw ? 'http://59.32.1.174:6061' : 'https://106.12.14.136:18086'    // 文件服务
 
@@ -24,8 +26,13 @@ export const api = {
         setMemberState: IP + "/manage/member/setMemberState",   // 手动修改成员状态的接口
         setMemberStateByDepartment: IP + "/manage/member/setMemberStateByDepartment",  //手动修改指定部门下所有成员状态的接口
         update: IP + "/manage/member/update",   // 修改成员属性接口
+        registerBatch: IP + "/manage/member/registerBatch",  // ?tMembers=wqeq批量同步
+
         departmentTree: IP + "/hamster/account/departmentTree", // 部门树形结构接口
-        upd: "http://railway.xiaomy.net/customer/member/setMemberState"
+        findAccountsByDeptId: IP + "/hamster/account/findAccountsByDeptId",    // ?deptId=520根据部门ID查询警员接口
+
+        upd: APPIP + "/customer/member/setMemberState",    // 修改状态memberSign=1&stateMachineSign=1&stateSign=1
+        setMemberStateBatch: APPIP + "/customer/member/setMemberStateBatch", //批量修改状态?memberSign=1&stateMachineSign=1&stateSign=1
     },
     mapUrl: {
         css: isGaw ? 'http://59.32.1.166:4869/arcgis_pc/arcgis_js_api/library/3.19/3.19/esri/css/esri.css' : // 市局pc

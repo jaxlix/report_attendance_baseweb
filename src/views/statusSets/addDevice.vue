@@ -3,23 +3,23 @@
         <div class="site">
             <div class="siteSearch">
                 <div class="siteContent">
-                    <div class="input-block">
+                    <div v-if="!batch" class="input-block">
                         <p class="label">
                             <em>*</em>成员姓名
                         </p>
-                        <el-input class="inp" v-model="model.memberName" placeholder="请输入姓名"></el-input>
+                        <el-input class="inp" v-model="model.memberName" :disabled="!isAdd" placeholder="请输入姓名"></el-input>
                     </div>
-                    <div class="input-block">
+                    <div v-if="!batch" class="input-block">
                         <p class="label">
                             <em>*</em>成员编号
                         </p>
-                        <el-input class="inp" v-model="model.memberSign" placeholder="请输入编号"></el-input>
+                        <el-input class="inp" v-model="model.memberSign" :disabled="!isAdd" placeholder="请输入编号"></el-input>
                     </div>
                     <div class="input-block">
                         <p class="label">
-                            <em>*</em>警种
+                            <em>*</em>勤务模式
                         </p>
-                        <el-select class="inp" v-model="model.memberStateMachineSign">
+                        <el-select class="inp" v-model="model.memberStateMachineSign" @change="model.stateSign=''">
                             <el-option
                                 v-for="(item, index) in memberStateMachineSign"
                                 :key="index"
@@ -28,11 +28,24 @@
                             ></el-option>
                         </el-select>
                     </div>
-                    <div class="input-block">
+                    <div v-if="isAdd" class="input-block">
                         <p class="label">
                             <em>*</em>部门标识
                         </p>
                         <el-input class="inp" v-model="model.departmentName" @focus="showTree = true" placeholder="请选择部门"></el-input>
+                    </div>
+                    <div v-if="!isAdd" class="input-block">
+                        <p class="label">
+                            <em>*</em>勤务状态
+                        </p>
+                        <el-select class="inp" v-model="model.stateSign">
+                            <el-option
+                                v-for="(item, index) in statusOptions[model.memberStateMachineSign]"
+                                :key="index"
+                                :label="item.label"
+                                :value="item.value"
+                            ></el-option>
+                        </el-select>
                     </div>
                     <div class="sure">
                         <el-button
@@ -72,7 +85,8 @@ export default {
                 memberSign: '', // 成员标识：警号
                 departmentSign: '', // 部门标识：部门ID
                 departmentName: '', // 部门名称
-                memberStateMachineSign: 'TRAIN_POLICEMAN' // 成员状态机标识：TRAIN_POLICEMAN 乘警 PATROLMAN 巡警 CIVIL_POLICEMAN 机关民警
+                memberStateMachineSign: 'TRAIN_POLICEMAN', // 成员状态机标识：TRAIN_POLICEMAN 乘警 PATROLMAN 巡警 CIVIL_POLICEMAN 机关民警
+                stateSign: ''   // 状态
             },
             memberStateMachineSign: [
                 {
@@ -88,6 +102,72 @@ export default {
                     value: "CIVIL_POLICEMAN"
                 }
             ],
+            // 乘警：
+            // RESTING, // 乘警、巡警、机关民警勤务状态流转中的休息状态
+            // SET_OFF, // 乘警勤务状态流转中的出乘状态
+            // INTERVAL, // 乘警的间休状态
+            // INSTRUCTION_HANDLING, // 乘警、巡警勤务状态流转中的处警状态
+            // PRE_GO_OFF, // 乘警勤务状态流转中的预退乘状态
+            // 巡警：
+            // RESTING, // 乘警、巡警、机关民警勤务状态流转中的休息状态
+            // INSTRUCTION_HANDLING, // 乘警、巡警勤务状态流转中的处警状态
+            // PATROLLING, // 巡警勤务状态流转中的巡逻状态
+            // PRE_LEAVE_PATROLLING, // 巡警勤务状态流转中的预结束巡逻状态
+            // 机关民警：
+            // RESTING, // 乘警、巡警、机关民警勤务状态流转中的休息状态
+            // START_WORK, // 机关民警勤务状态流转中的上班状态
+            statusOptions: {
+                TRAIN_POLICEMAN: [
+                    {
+                        label: "休息",
+                        value: "RESTING"
+                    },
+                    {
+                        label: "出乘",
+                        value: "SET_OFF"
+                    },
+                    {
+                        label: "间休",
+                        value: "INTERVAL"
+                    },
+                    {
+                        label: "处警",
+                        value: "INSTRUCTION_HANDLING"
+                    },
+                    {
+                        label: "预退乘",
+                        value: "PRE_GO_OFF"
+                    }
+                ],
+                PATROLMAN: [
+                    {
+                        label: "休息",
+                        value: "RESTING"
+                    },
+                    {
+                        label: "处警",
+                        value: "INSTRUCTION_HANDLING"
+                    },
+                    {
+                        label: "巡逻",
+                        value: "PATROLLING"
+                    },
+                    {
+                        label: "预结束巡逻",
+                        value: "PRE_LEAVE_PATROLLING"
+                    }
+                ],
+                CIVIL_POLICEMAN: [
+                    {
+                        label: "休息",
+                        value: "RESTING"
+                    },
+                    {
+                        label: "上班",
+                        value: "START_WORK"
+                    }
+                ],
+            },
             showTree: false
         }
     },
@@ -95,13 +175,20 @@ export default {
         data: {
             type: Object,
             default: null
+        },
+        batch: {
+            type: Boolean,
+            default: false
         }
     },
     components: {
         Tree
     },
     watch: {
-        data(val) {
+        batch(val) {
+            this.batch =val
+        },
+        data() {
             this.loadData()
         }
     },
@@ -110,9 +197,20 @@ export default {
         loadData() {
             if (this.data) {
                 this.isAdd = false;
-                this.model.id = this.data.id
-                for (let key in this.model) {
-                    this.model[key] = this.data[key]
+                if(this.batch){
+                    this.model = {
+                        memberName: '',	// 成员名称
+                        memberSign: this.data.memberSign, // 成员标识：警号
+                        departmentSign: '', // 部门标识：部门ID
+                        departmentName: '', // 部门名称
+                        memberStateMachineSign: 'TRAIN_POLICEMAN', // 成员状态机标识：TRAIN_POLICEMAN 乘警 PATROLMAN 巡警 CIVIL_POLICEMAN 机关民警
+                        stateSign: ""
+                    }
+                }else{
+                    this.model.stateSign = ""
+                    for (let key in this.model) {
+                        this.model[key] = this.data[key]
+                    }
                 }
             } else {
                 this.isAdd = true;
@@ -141,7 +239,13 @@ export default {
         },
         // 修改
         updateTerminal() {
-            this.$get(this.$api.update, this.model).then(res => {
+            console.log(this.model)
+            let obj = {
+                memberSign: this.model.memberSign,
+                stateMachineSign: this.model.memberStateMachineSign,
+                stateSign: this.model.stateSign
+            }
+            this.$get(this.batch ? this.$api.upd : this.$api.setMemberStateBatch, obj).then(res => {
                 if (res.result == 0) {
                     this.$message({
                         message: "修改成功",
