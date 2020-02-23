@@ -51,7 +51,6 @@
 
 <script>
 	import addDevice from "./addDevice"
-	import upload from "@/components/common/upload"
 	export default {
 		data() {
 			return {
@@ -85,8 +84,7 @@
 			};
 		},
 		components: {
-			addDevice,
-			upload
+			addDevice
 		},
 		methods: {
 			getTerminal() {

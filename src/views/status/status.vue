@@ -20,7 +20,9 @@
 					</el-table-column>
 					<el-table-column label="勤务状态流转逻辑" align="center">
 						<template slot-scope="scope">
-							<img :class="allScreen == scope.row.id ? 'allScreen' : ''" @mousemove="allScreen = scope.row.id" :src="scope.row.img" alt="">
+							<div :class="allScreen == scope.row.id ? 'allScreen' : 'img'" @click="allScreen=''">
+								<img @mousemove="allScreen = scope.row.id" :src="scope.row.img" alt="">
+							</div>
 						</template>
 					</el-table-column>
 				</el-table>
@@ -35,14 +37,22 @@
 			return {
 				tableData: [
 					{
+						id: 1,
 						type: "乘警",
-						types: "休息、出乘、预退乘、间休、处警、到达现场 休息、巡逻、预结束巡逻、间休、处警、到达现场 休息、上班",
-						img: require("@/assets/icon/ico_leftlist_speeking.png")
+						types: "休息、出乘、预退乘、间休、处警",
+						img: require("@/assets/icon/lc_cj.png")
 					},
 					{
+						id: 2,
 						type: "巡警",
-						types: "休息、出乘、预退乘、间休、处警、到达现场 休息、巡逻、预结束巡逻、间休、处警、到达现场 休息、上班",
-						img: require("@/assets/icon/ico_leftlist_speeking.png")
+						types: "休息、巡逻、预结束巡逻、处警",
+						img: require("@/assets/icon/lc_xj.png")
+					},
+					{
+						id: 3,
+						type: "机关民警",
+						types: "休息、上班",
+						img: require("@/assets/icon/lc_jgmj.png")
 					}
 				],
 				allScreen: ''
@@ -72,12 +82,26 @@
 				right: 20px;
 			}
 		}
+		.img{
+			img{
+				width: 390px;
+				height: 190px;
+			}
+		}
 		.allScreen{
 			position: fixed;
-			left: 0;
-			top: 0;
 			width: 100%;
 			height: 100%;
+			left: 0;
+			top: 0;
+			background-color: rgba(0, 0, 0, .3);
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			z-index: 99999;
+			img{
+				width: 600px;
+			}
 		}
 	}
 }
