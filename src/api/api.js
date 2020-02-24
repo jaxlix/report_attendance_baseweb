@@ -1,7 +1,7 @@
 let isGaw = false   // 是否公安网
 // const IP = isGaw ? 'http://59.32.1.170:9011' : 'http://issts.free-http.svipss.top'   // 百度云测试环境
-const IP = isGaw ? 'http://59.32.1.170:9011' : 'http://192.168.1.67:8800'   // 公司测试环境后台服务
-const APPIP = isGaw ? 'http://59.32.1.170:9011' : 'http://192.168.1.67:8081'   // 公司测试环境app服务
+const IP = isGaw ? 'http://59.32.1.170:9011' : 'http://192.168.1.100:8800'   // 公司测试环境后台服务
+const APPIP = isGaw ? 'http://59.32.1.170:9011' : 'http://192.168.1.100:8811'   // 公司测试环境app服务
 
 // const IP2 = isGaw ? 'http://59.32.1.174:6061' : 'http://192.168.1.223:6061'    // 文件服务
 const IP2 = isGaw ? 'http://59.32.1.174:6061' : 'https://106.12.14.136:18086'    // 文件服务

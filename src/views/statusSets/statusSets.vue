@@ -24,7 +24,7 @@
                             <template slot-scope="scope">{{ scope.row.memberName }}</template>
                         </el-table-column>
                         <el-table-column label="成员编号" align="center">
-                            <template slot-scope="scope">{{ scope.row.memberName }}</template>
+                            <template slot-scope="scope">{{ scope.row.memberSign }}</template>
                         </el-table-column>
 						<el-table-column label="所属部门" align="center">
                             <template

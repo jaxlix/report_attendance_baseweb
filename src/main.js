@@ -5,7 +5,7 @@ import store from './store/store'
 import FastClick from 'fastclick'
 import './assets/rest.css'
 import './assets/InfoWindow.css'
-import './js/login.js'
+// import './js/login.js'
 
 //引入 ElementUI  UI库
 import ElementUI from 'element-ui'
