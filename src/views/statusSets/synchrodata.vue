@@ -1,7 +1,7 @@
 <template>
     <div id="synchrodata">
         <div class="tree-box">
-            <zTree @returnData="getDeptData" />
+            <zTree :checkbox="true" @returnCheckData="getCheckData" />
         </div>
         <div class="list">
             <div class="title">
@@ -40,7 +40,7 @@ export default {
         return {
             list: [],
             listObj: {},
-            deptId: '',
+            checks: {},
             memberStateMachineSign: 'TRAIN_POLICEMAN',
             memberStateMachineSignOptions: [
                 {
@@ -62,24 +62,50 @@ export default {
         zTree
     },
     methods: {
-        getlist(){
-            this.$get(this.$api.findAccountsByDeptId, {deptId: this.deptId}).then( res => {
+        getlist(deptId){
+            this.$get(this.$api.findAccountsByDeptId, {deptId: deptId}).then( res => {
                 if(res.result == 0){
-                    let arr = []
-                    for (let index = 0; index < res.data.length; index++) {
-                        const e = res.data[index];
-                        if(this.listObj[e.accountNo] != e.departmentId){
-                            arr.push(e)
-                            this.listObj[e.accountNo] = e.departmentId
-                        }
-                    }
-                    this.list = this.list.concat(arr)
+                    // let arr = []
+                    // for (let index = 0; index < res.data.length; index++) {
+                    //     const e = res.data[index];
+                    //     if(this.listObj[e.accountNo] != e.departmentId){
+                    //         arr.push(e)
+                    //         this.listObj[e.accountNo] = e.departmentId
+                    //     }
+                    // }
+                    this.list = this.list.concat(res.data)
                 }
             })
         },
-        getDeptData(d){
-            this.deptId = d.id
-            this.getlist()
+        getCheckData(d){
+            console.log(this.checks)
+            this.list = []
+            d.forEach( e => {
+                // if(!this.checks[e.id]){
+                //     this.checks[e.id] = true
+                // }
+                this.getlist(e.id)
+            })
+            // for (const key in this.checks) {
+            //     if(this.checks[key]){
+            //         let h = false
+            //         d.forEach( e => {
+            //             if(key == e.id){
+            //                 h = true
+            //             }
+            //         })
+            //         if(!h){
+            //             this.checks[key] = false
+            //             let arr = []
+            //             this.list.forEach( (item) => {
+            //                 if(item.departmentId != key){
+            //                     arr.push(item)
+            //                 }
+            //             })
+            //             this.list = arr
+            //         }
+            //     }
+            // }
         },
         registerBatch(){
             if(this.list.length == 0){

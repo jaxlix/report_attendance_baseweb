@@ -2,9 +2,12 @@
     <div>
         <el-tree
             node-key="id"
+            ref="zTree"
             :data="treeData"
             :props="defaultProps"
             :default-expanded-keys="defaultExpanded"
+            :show-checkbox="checkbox"
+            @check="handleCheckChange"
             @node-click="handleNodeClick"
         ></el-tree>
     </div>
@@ -23,8 +26,13 @@ export default {
             defaultExpanded: []
         };
     },
+    props: {
+        "checkbox": {
+            type: Boolean,
+            default: false
+        }
+    },
     created() {
-        console.log(window.DEPT_DATA)
         if(window.DEPT_DATA){
             this.treeData = [window.DEPT_DATA];
             this.defaultExpanded.push(window.DEPT_DATA.id);
@@ -45,6 +53,9 @@ export default {
         },
         handleNodeClick(data){
             this.$emit("returnData", data)
+        },
+        handleCheckChange(){
+            this.$emit("returnCheckData", this.$refs.zTree.getCheckedNodes())
         }
     }
 };
