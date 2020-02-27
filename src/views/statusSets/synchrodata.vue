@@ -120,15 +120,18 @@ export default {
                     memberStateMachineSign: this.memberStateMachineSign
                 })
             })
-            let p = new URLSearchParams()
-            p.append("tMembers", JSON.stringify(arr))
-            this.$post(this.$api.registerBatch, p).then( res => {
+            this.$postJson(this.$api.registerBatch, arr).then( res => {
                 if(res.result == 0){
                     this.$message({
                         message: "同步成功",
                         type: 'success'
                     })
                     this.$emit("close")
+                }else{
+                    this.$message({
+                        message: "同步失败",
+                        type: 'error'
+                    })
                 }
             })
         },

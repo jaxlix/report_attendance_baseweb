@@ -19,7 +19,7 @@
                         <p class="label">
                             <em>*</em>勤务模式
                         </p>
-                        <el-select class="inp" v-model="model.memberStateMachineSign" @change="model.stateSign=''">
+                        <el-select class="inp" v-model="model.memberStateMachineSign" @change="model.stateSign='RESTING'">
                             <el-option
                                 v-for="(item, index) in memberStateMachineSign"
                                 :key="index"
@@ -49,23 +49,21 @@
                     </div>
                     <div class="sure">
                         <el-button
-                            v-show="isAdd"
                             type="primary"
-                            class="lowerSure"
+                            class="btn-cancel"
+                            @click="cancel"
+                        >取消</el-button>
+                        <el-button
+                            type="primary"
+                            class="btn-ok"
                             @click="addTerminal"
                         >确定</el-button>
-                        <el-button
-                            v-show="!isAdd"
-                            type="primary"
-                            class="lowerSure"
-                            @click="updateTerminal"
-                        >提交修改</el-button>
                     </div>
                 </div>
             </div>
         </div>
         <!-- 选择部门 -->
-        <el-dialog title="选择部门" :visible.sync="showTree">
+        <el-dialog title="选择部门" :visible.sync="showTree" :modal="false" >
             <Tree @returnData="getData" />
         </el-dialog>
     </div>
@@ -86,7 +84,7 @@ export default {
                 departmentSign: '', // 部门标识：部门ID
                 departmentName: '', // 部门名称
                 memberStateMachineSign: 'TRAIN_POLICEMAN', // 成员状态机标识：TRAIN_POLICEMAN 乘警 PATROLMAN 巡警 CIVIL_POLICEMAN 机关民警
-                stateSign: ''   // 状态
+                stateSign: 'RESTING'   // 状态
             },
             memberStateMachineSign: [
                 {
@@ -204,13 +202,13 @@ export default {
                         departmentSign: '', // 部门标识：部门ID
                         departmentName: '', // 部门名称
                         memberStateMachineSign: 'TRAIN_POLICEMAN', // 成员状态机标识：TRAIN_POLICEMAN 乘警 PATROLMAN 巡警 CIVIL_POLICEMAN 机关民警
-                        stateSign: ""
+                        stateSign: "RESTING"
                     }
                 }else{
-                    this.model.stateSign = ""
                     for (let key in this.model) {
                         this.model[key] = this.data[key]
                     }
+                    this.model.stateSign = this.data.memberStateSign || "RESTING"
                 }
             } else {
                 this.isAdd = true;
@@ -225,21 +223,24 @@ export default {
         },
         // 添加
         addTerminal() {
-            this.$get(this.$api.register, this.model).then(res => {
-                if (res.result == 0) {
-                    this.$message({
-                        message: "添加成功",
-                        type: "success"
-                    });
-                    this.$emit("reload");
-                } else {
-                    this.$message.error("添加失败");
-                }
-            });
+            if(this.isAdd){
+                this.$get(this.$api.register, this.model).then(res => {
+                    if (res.result == 0) {
+                        this.$message({
+                            message: "添加成功",
+                            type: "success"
+                        });
+                        this.$emit("reload");
+                    } else {
+                        this.$message.error("添加失败");
+                    }
+                });
+            } else {
+                this.updateTerminal()
+            }
         },
         // 修改
         updateTerminal() {
-            console.log(this.model)
             let obj = {
                 memberSign: this.model.memberSign,
                 stateMachineSign: this.model.memberStateMachineSign,
@@ -262,6 +263,9 @@ export default {
             this.model.departmentSign = d.id
             this.model.departmentName = d.name
             this.showTree = false
+        },
+        cancel(){
+            this.$emit("reload", "notReload")
         }
     },
     mounted() {
@@ -295,12 +299,26 @@ export default {
         }
         .sure {
             text-align: left;
-            .lowerSure {
-                height: 30px;
+            margin-left: 100px;
+            .btn-cancel {
+                width: 120px;
+                height: 40px;
                 line-height: 0px;
                 margin-top: 15px;
-                margin-left: 100px;
                 margin-bottom: 30px;
+                background-color: #D7DEE5;
+                border: 0;
+            }
+            .btn-ok {
+                width: 120px;
+                height: 40px;
+                line-height: 0px;
+                margin-top: 15px;
+                margin-left: 20px;
+                margin-bottom: 30px;
+                background-color: #409EFF;
+                color: #fff;
+                border: 0;
             }
         }
     }
@@ -312,7 +330,7 @@ export default {
             margin-bottom: 10px;
             position: relative;
             .label {
-                width: 160px;
+                width: 90px;
                 line-height: 40px;
                 em {
                     color: red;

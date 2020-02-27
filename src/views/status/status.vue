@@ -3,8 +3,8 @@
 		<div class="teskContent">
 			<!-- 搜索 -->
 			<div class="tesk_">
-				<el-input v-model="keyword" placeholder="请输入关键字" class="inputPlan"></el-input>
-				<el-button type="primary" @click="searchName" icon="el-icon-search">搜索</el-button>
+				<el-input v-model="keyword" placeholder="请输入关键字" class="inputPlan" @keyup.enter="search"></el-input>
+				<el-button type="primary" @click="search" icon="el-icon-search">搜索</el-button>
 				<div class="tesk_right">
 					<!-- <el-button type="primary" @click="dialogTableVisible=true, rowData=''">添加</el-button> -->
 				</div>
@@ -20,8 +20,8 @@
 					</el-table-column>
 					<el-table-column label="勤务状态流转逻辑" align="center">
 						<template slot-scope="scope">
-							<div :class="allScreen == scope.row.id ? 'allScreen' : 'img'" @click="allScreen=''">
-								<img @mousemove="allScreen = scope.row.id" :src="scope.row.img" alt="">
+							<div :class="allScreen == scope.row.id ? 'allScreen' : 'img'" @click="allScreen = allScreen==''?scope.row.id:''">
+								<img :src="scope.row.img" alt="">
 							</div>
 						</template>
 					</el-table-column>
@@ -55,8 +55,44 @@
 						img: require("@/assets/icon/lc_jgmj.png")
 					}
 				],
-				allScreen: ''
+				tableData2: [
+					{
+						id: 1,
+						type: "乘警",
+						types: "休息、出乘、预退乘、间休、处警",
+						img: require("@/assets/icon/lc_cj.png")
+					},
+					{
+						id: 2,
+						type: "巡警",
+						types: "休息、巡逻、预结束巡逻、处警",
+						img: require("@/assets/icon/lc_xj.png")
+					},
+					{
+						id: 3,
+						type: "机关民警",
+						types: "休息、上班",
+						img: require("@/assets/icon/lc_jgmj.png")
+					}
+				],
+				allScreen: '',
+				keyword: ''
 			};
+		},
+		methods: {
+			search(){
+				if(this.keyword == ''){
+					this.tableData = this.tableData2
+				}else{
+					let arr = []
+					this.tableData2.forEach( d => {
+						if(d.type.indexOf(this.keyword) != -1){
+							arr.push(d)
+						}
+					})
+					this.tableData = arr
+				}
+			}
 		}
 	};
 </script>

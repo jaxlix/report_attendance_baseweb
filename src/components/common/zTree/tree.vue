@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="tree">
         <el-tree
             node-key="id"
             ref="zTree"
@@ -60,3 +60,14 @@ export default {
     }
 };
 </script>
+
+<style lang="less" scoped>
+    #tree{
+        /deep/.el-tree{
+            .el-tree-node.is-current > .el-tree-node__content {
+                background-color: #409EFF;
+                color: #fff;
+            }
+        }
+    }
+</style>

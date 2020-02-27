@@ -3,13 +3,13 @@
         <div class="teskContent">
             <!-- 搜索 -->
             <div class="tesk_">
-                <el-input v-model="vague" placeholder="姓名/编号" class="inputPlan"></el-input>
+                <el-input v-model="vague" placeholder="姓名/编号" class="inputPlan" @keyup.enter.native="searchName"></el-input>
                 <el-button type="primary" @click="searchName" icon="el-icon-search">搜索</el-button>
                 <el-button v-show="checkedList.length>0" type="primary" @click="updStatus">编辑</el-button>
                 <el-button v-show="checkedList.length>0" type="primary" @click="batchDelete">删除</el-button>
                 <div class="tesk_right">
                     <el-button type="primary" @click="synchronousVisible=true">同步</el-button>
-                    <el-button type="primary" @click="dialogTableVisible=true, rowData=''">添加</el-button>
+                    <el-button type="primary" @click="dialogTableVisible=true, rowData='', title='添加成员'">添加</el-button>
                 </div>
             </div>
             <!-- 数据表格 -->
@@ -36,6 +36,11 @@
                                 slot-scope="scope"
                             >{{ machineSign[scope.row.memberStateMachineSign] }}</template>
                         </el-table-column>
+                        <el-table-column label="勤务状态" align="center">
+                            <template
+                                slot-scope="scope"
+                            >{{ memberStateSigns[scope.row.memberStateSign] }}</template>
+                        </el-table-column>
                         <el-table-column label="操作" fixed="right" width="200">
                             <template slot-scope="scope">
                                 <el-button size="mini" @click="getDetail(scope.row)">编辑</el-button>
@@ -53,7 +58,7 @@
                         :total="total"
                         class="pagination"
                         :pager-count="5"
-                        :current-page="page+1"
+                        :current-page="page"
                         :page-size="pageSize"
                         @current-change="handleCurrentChange"
                     ></el-pagination>
@@ -61,11 +66,11 @@
             </div>
         </div>
         <!-- 添加设备 -->
-        <el-dialog title="添加成员" :visible.sync="dialogTableVisible">
+        <el-dialog :title="title" :visible.sync="dialogTableVisible" :destroy-on-close="true">
             <addDevice :data="rowData" :batch="batch" @reload="reload"></addDevice>
         </el-dialog>
         <!-- 同步数据 -->
-        <el-dialog title="从融合通信同步数据" :visible.sync="synchronousVisible" width="750px">
+        <el-dialog title="从融合通信同步数据" :visible.sync="synchronousVisible" :destroy-on-close="true" width="800px">
             <synchrodata @close="closesync" />
         </el-dialog>
     </div>
@@ -84,6 +89,7 @@ export default {
             taskName: "",
             dialogTableVisible: false,
             synchronousVisible: false,
+            title: "添加成员",
             finishStatus: "",
             total: 0,
             num: 0,
@@ -98,6 +104,16 @@ export default {
                 TRAIN_POLICEMAN: "乘警",
                 PATROLMAN: "巡警",
                 CIVIL_POLICEMAN: "机关民警"
+            },
+            memberStateSigns: {
+                "RESTING": "休息",
+                "SET_OFF": "出乘",
+                "INTERVAL": "间休",
+                "INSTRUCTION_HANDLING": "处警",
+                "PRE_GO_OFF": "预退乘",
+                "PATROLLING": "巡逻",
+                "PRE_LEAVE_PATROLLING": "预结束巡逻",
+                "START_WORK": "上班"
             },
             checkedList: []
         };
@@ -129,11 +145,13 @@ export default {
         },
         // 修改
         getDetail(d) {
+            this.title = "修改成员状态"
             this.dialogTableVisible = true;
             this.rowData = d;
         },
         // 批量修改状态
         updStatus() {
+            this.title = "批量修改成员状态"
             let memberSigns = ""
             if(this.checkedList.length > 0){
                 this.checkedList.forEach( (d, i) => {
@@ -220,23 +238,39 @@ export default {
         },
 		// 分页
         handleCurrentChange(newPage) {
-            this.page = newPage - 1;
+            this.page = newPage;
             this.getData();
 		},
 		// 搜索
         searchName() {
+            if(this.vague == ''){
+                this.departmentSign = ''
+            }
             this.getData();
         },
         // 添加或修改成功之后更新列表
-        reload() {
-            this.dialogTableVisible = false;
-            this.getData();
+        reload(v) {
+            if(v == 'notReload'){
+                this.dialogTableVisible = false;
+            }else{
+                this.dialogTableVisible = false;
+                this.getData();
+            }
         },
         // 获取部门id重新加载数据表格
         getDeptData(d){
             if(this.departmentSign != d.id){
                 this.departmentSign = d.id;
                 this.getData();
+            }else{
+                this.departmentSign = "";
+                this.getData();
+                // 防止去除父节点class时无效
+                setTimeout(() => {
+                    let dom = document.getElementsByClassName("is-current")[0];
+                    let classVal = dom.getAttribute("class").replace("is-current","");
+                    dom.setAttribute("class", classVal);
+                }, 200);
             }
         },
         checkedData(d){
@@ -282,7 +316,7 @@ export default {
         }
         .taskPlanList {
             display: flex;
-            height: 600px;
+            height: 648px;
             .tree {
                 width: 300px;
                 height: 100%;
@@ -321,7 +355,9 @@ export default {
 }
 .pagination {
     margin-top: 20px;
+    padding-bottom: 20px;
     text-align: center;
+    border-bottom: 1px solid #d6d6d6;
 }
 .online {
     color: #0ee20e;
