@@ -246,7 +246,7 @@ export default {
                 stateMachineSign: this.model.memberStateMachineSign,
                 stateSign: this.model.stateSign
             }
-            this.$get(this.batch ? this.$api.upd : this.$api.setMemberStateBatch, obj).then(res => {
+            this.$get(this.batch ? this.$api.setMemberStateBatch : this.$api.upd, obj).then(res => {
                 if (res.result == 0) {
                     this.$message({
                         message: "修改成功",

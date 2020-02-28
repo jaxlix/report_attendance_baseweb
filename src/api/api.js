@@ -30,6 +30,7 @@ export const api = {
 
         departmentTree: IP + "/hamster/account/departmentTree", // 部门树形结构接口
         findAccountsByDeptId: IP + "/hamster/account/findAccountsByDeptId",    // ?deptId=520根据部门ID查询警员接口
+        findAccountsByKey: IP + "/hamster/account/findAccountsByKey",   // ?key=545&pageNum=1&pageSize=10模糊查询警员
 
         upd: APPIP + "/customer/member/setMemberState",    // 修改状态memberSign=1&stateMachineSign=1&stateSign=1
         setMemberStateBatch: APPIP + "/customer/member/setMemberStateBatch", //批量修改状态?memberSign=1&stateMachineSign=1&stateSign=1

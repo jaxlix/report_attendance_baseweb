@@ -9,7 +9,7 @@
                 <el-button v-show="checkedList.length>0" type="primary" @click="batchDelete">删除</el-button>
                 <div class="tesk_right">
                     <el-button type="primary" @click="synchronousVisible=true">同步</el-button>
-                    <el-button type="primary" @click="dialogTableVisible=true, rowData='', title='添加成员'">添加</el-button>
+                    <!-- <el-button type="primary" @click="dialogTableVisible=true, rowData='', title='添加成员'">添加</el-button> -->
                 </div>
             </div>
             <!-- 数据表格 -->
@@ -43,7 +43,7 @@
                         </el-table-column>
                         <el-table-column label="操作" fixed="right" width="200">
                             <template slot-scope="scope">
-                                <el-button size="mini" @click="getDetail(scope.row)">编辑</el-button>
+                                <el-button size="mini" @click="upd(scope.row)">编辑</el-button>
                                 <el-button
                                     size="mini"
                                     type="danger"
@@ -144,7 +144,8 @@ export default {
             );
         },
         // 修改
-        getDetail(d) {
+        upd(d) {
+            this.batch = false
             this.title = "修改成员状态"
             this.dialogTableVisible = true;
             this.rowData = d;
@@ -284,6 +285,7 @@ export default {
             this.checkedList = val
         },
         closesync(){
+            this.getData()
             this.synchronousVisible = false
         }
     },
