@@ -20,10 +20,10 @@
 					</el-table-column>
 					<el-table-column label="勤务状态流转逻辑" align="center">
 						<template slot-scope="scope">
-							<div :class="allScreen == scope.row.id ? 'allScreen' : 'hide'" @click="allScreen = allScreen==''?scope.row.id:''">
+							<div :class="allScreen == scope.row.id ? 'allScreen' : 'hide'"  @click="allScreen=''">
 								<img :src="scope.row.img" alt="">
 							</div>
-							<div class="img">
+							<div class="img" @click="allScreen=scope.row.id">
 								<img :src="scope.row.img" alt="" title="点击放大">
 							</div>
 						</template>
