@@ -44,7 +44,7 @@ export default {
         };
     },
     methods: {
-        onSubmit(formName) {
+        onSubmit() {
             this.$router.push("/status");
             // this.$refs[formName].validate(valid => {
             //     let params = new URLSearchParams();
@@ -66,6 +66,9 @@ export default {
             //     });
             // });
         }
+    },
+    created(){
+        this.$router.push("/status")
     }
 };
 </script>

@@ -7,6 +7,7 @@
             :props="defaultProps"
             :default-expanded-keys="defaultExpanded"
             :show-checkbox="checkbox"
+            :check-on-click-node="checkOnClickNode"
             @check="handleCheckChange"
             @node-click="handleNodeClick"
         ></el-tree>
@@ -28,6 +29,10 @@ export default {
     },
     props: {
         "checkbox": {
+            type: Boolean,
+            default: false
+        },
+        "checkOnClickNode": {
             type: Boolean,
             default: false
         }

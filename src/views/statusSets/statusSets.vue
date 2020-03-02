@@ -54,13 +54,15 @@
                     </el-table>
                     <el-pagination
                         background
-                        layout="prev, pager, next"
                         :total="total"
                         class="pagination"
                         :pager-count="5"
                         :current-page="page"
+                        :page-sizes="[10, 20, 30, 40, 50]"
                         :page-size="pageSize"
+                        layout="total, sizes, prev, pager, next, jumper"
                         @current-change="handleCurrentChange"
+                        @size-change="handleSizeChange"
                     ></el-pagination>
                 </div>
             </div>
@@ -241,7 +243,12 @@ export default {
         handleCurrentChange(newPage) {
             this.page = newPage;
             this.getData();
-		},
+        },
+        handleSizeChange(val){
+            this.page = 1
+            this.pageSize = val
+            this.getData();
+        },
 		// 搜索
         searchName() {
             if(this.vague == ''){
@@ -260,6 +267,7 @@ export default {
         },
         // 获取部门id重新加载数据表格
         getDeptData(d){
+            this.page = 1
             if(this.departmentSign != d.id){
                 this.departmentSign = d.id;
                 this.getData();
@@ -318,7 +326,7 @@ export default {
         }
         .taskPlanList {
             display: flex;
-            height: 648px;
+            height: 700px;
             .tree {
                 width: 300px;
                 height: 100%;
@@ -329,6 +337,7 @@ export default {
             .table-box {
                 flex: 1;
                 height: 100%;
+                overflow: auto;
                 .table {
                     text-align: center;
                 }

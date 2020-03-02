@@ -12,7 +12,7 @@
                     <i class="el-icon-check" :class="listObj_search[d.accountNo] ? 'checked' : ''"></i>
                 </div>
             </div>
-            <zTree v-show="searchList.length==0" :checkbox="true" @returnCheckData="getCheckData" />
+            <zTree v-show="searchList.length==0" :checkbox="true" :checkOnClickNode="true" @returnCheckData="getCheckData" />
         </div>
         <div class="list">
             <div class="title">
